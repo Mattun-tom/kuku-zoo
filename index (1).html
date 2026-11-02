@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>九九どうぶつえん</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="九九どうぶつ">
+<meta name="theme-color" content="#e4f3ff">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&display=swap">
+<style>
+:root{--bg:#e4f3ff;--card:#ffffff;--ink:#22306b;--sub:#5a6794;--sun:#ffc93c;--mint:#46c99a;--pink:#ff6f91;--line:#b9d8f2;--dot:#ff8a4c;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141a3a;--card:#222b5c;--ink:#f3f5ff;--sub:#a9b4e6;--line:#38437f}}
+:root[data-theme="dark"]{--bg:#141a3a;--card:#222b5c;--ink:#f3f5ff;--sub:#a9b4e6;--line:#38437f}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Yu Gothic",sans-serif;font-weight:700;min-height:100vh}
+main{max-width:480px;margin:0 auto;padding:16px}
+h1{font-size:30px;font-weight:900;margin:8px 0 4px;text-align:center}
+p.lead{text-align:center;color:var(--sub);margin:0 0 16px}
+.card{background:var(--card);border-radius:24px;padding:16px;margin-bottom:14px;border:3px solid var(--line)}
+.zoo{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;text-align:center}
+.pen{aspect-ratio:1;border-radius:18px;border:3px dashed var(--line);display:flex;align-items:center;justify-content:center;font-size:30px;position:relative}
+.pen.on{border:3px solid var(--mint);background:rgba(70,201,154,.15)}
+.pen:not(.on) span{filter:grayscale(1) brightness(1.3);opacity:.25}
+.pen:not(.on) span.q{filter:none;opacity:.7;color:var(--sub)}
+.pen small{position:absolute;bottom:1px;right:6px;font-size:11px;color:var(--sub)}
+.pen small.t{top:1px;left:6px;bottom:auto;right:auto}
+.chips{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+button{font:inherit;color:var(--ink);cursor:pointer}
+.chip{height:52px;border-radius:16px;border:3px solid var(--line);background:var(--card);font-size:22px;font-weight:900}
+.chip.sel{background:var(--sun);border-color:var(--sun);color:#22306b;transform:translateY(-2px)}
+.big{width:100%;height:64px;border-radius:20px;border:0;background:var(--pink);color:#fff;font-size:24px;font-weight:900;box-shadow:0 5px 0 #d94f72}
+.big:active{transform:translateY(4px);box-shadow:0 1px 0 #d94f72}
+.bar{display:flex;gap:5px;margin-bottom:12px}
+.bar i{flex:1;height:12px;border-radius:6px;background:var(--line)}
+.bar i.ok{background:var(--mint)}.bar i.ng{background:var(--pink)}.bar i.now{background:var(--sun)}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;color:var(--sub)}
+.q{font-size:76px;font-weight:900;text-align:center;line-height:1.1;margin:6px 0}
+.q em{font-style:normal;color:var(--pink);margin:0 6px}
+.combo{text-align:center;height:28px;color:var(--dot);font-size:20px}
+.ans{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.a{height:84px;border-radius:22px;border:3px solid var(--line);background:var(--card);font-size:38px;font-weight:900;box-shadow:0 5px 0 var(--line)}
+.a:active{transform:translateY(4px);box-shadow:0 1px 0 var(--line)}
+.a.good{background:var(--mint);border-color:var(--mint);color:#fff;animation:pop .35s}
+.a.bad{background:var(--pink);border-color:var(--pink);color:#fff;animation:shake .35s}
+@keyframes pop{50%{transform:scale(1.12)}}
+@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.hint{background:none;border:3px solid var(--line);border-radius:14px;padding:6px 12px;color:var(--sub)}
+.dots{display:grid;gap:4px;justify-content:center;margin:8px 0}
+.dots div{display:flex;gap:4px;justify-content:center;align-items:center}
+.dots b{width:16px;height:16px;border-radius:50%;background:var(--dot);display:block}
+.dots span{font-size:14px;color:var(--sub);margin-left:6px;min-width:40px}
+.msg{text-align:center;font-size:22px;min-height:34px;margin-top:10px}
+.res{text-align:center}
+.res .face{font-size:96px;animation:pop .6s}
+.stars{font-size:44px;letter-spacing:6px}
+.link{background:none;border:0;color:var(--sub);text-decoration:underline;width:100%;padding:12px;font-size:16px}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<main>
+<section id="home">
+  <h1>九九どうぶつえん</h1>
+  <p class="lead">れんしゅうして どうぶつを あつめよう！</p>
+  <div class="card"><div class="zoo" id="zoo"></div></div>
+  <div class="card">
+    <div style="margin-bottom:10px">れんしゅうする「だん」をえらぼう</div>
+    <div class="chips" id="chips"></div>
+  </div>
+  <button class="big" id="start">スタート！</button>
+  <p class="lead" style="margin-top:12px;font-size:14px">10もん中 9もん せいかいで クリア！ 5かい クリアすると どうぶつが なかまに なるよ（ランダムも 5かいで レアな どうぶつが きてくれるよ）</p>
+</section>
+
+<section id="game" hidden>
+  <div class="top"><button class="hint" id="quit">やめる</button><span id="score"></span></div>
+  <div class="bar" id="bar"></div>
+  <div class="card">
+    <div class="q" id="q"></div>
+    <div class="combo" id="combo"></div>
+    <div class="dots" id="dots" hidden></div>
+    <div style="text-align:center"><button class="hint" id="hintBtn">ヒントをみる</button></div>
+  </div>
+  <div class="ans" id="ans"></div>
+  <div class="msg" id="msg"></div>
+</section>
+
+<section id="result" hidden>
+  <div class="card res">
+    <div class="face" id="rface"></div>
+    <div class="stars" id="rstars"></div>
+    <p id="rtext" style="font-size:22px"></p>
+  </div>
+  <button class="big" id="again">もういちど！</button>
+  <button class="link" id="home2">ホームにもどる</button>
+</section>
+</main>
+
+<script>
+const ANIMALS=['🐶','🐱','🐰','🐼','🦊','🐸','🐧','🦁','🐙'];
+const RARE='🦄';
+const $=id=>document.getElementById(id);
+let got={},sel=2,qs=[],idx=0,ok=0,combo=0,locked=false,results=[],retry=false;
+try{got=JSON.parse(localStorage.getItem('kuku-zoo2')||'{}')}catch(e){got={}}
+const cl=d=>got[d]||0;
+function save(){try{localStorage.setItem('kuku-zoo2',JSON.stringify(got))}catch(e){}}
+function show(id){['home','game','result'].forEach(s=>$(s).hidden=s!==id);window.scrollTo(0,0)}
+
+function drawHome(){
+  $('zoo').innerHTML=ANIMALS.map((a,i)=>`<div class="pen ${cl(i+1)>=5?'on':''}"><span>${a}</span><small class="t">${i+1}</small><small>${Math.min(cl(i+1),5)}/5</small></div>`).join('')+`<div class="pen ${cl('r')>=5?'on':''}"><span class="${cl('r')>=5?'':'q'}">${cl('r')>=5?RARE:'？'}</span><small class="t">ランダム</small><small>${Math.min(cl('r'),5)}/5</small></div>`;
+  const c=[...Array(9)].map((_,i)=>`<button class="chip ${sel===i+1?'sel':''}" data-d="${i+1}">${i+1}</button>`);
+  c.push(`<button class="chip ${sel==='r'?'sel':''}" data-d="r" style="font-size:15px">ランダム</button>`);
+  $('chips').innerHTML=c.join('');
+}
+$('chips').onclick=e=>{
+  const b=e.target.closest('.chip');if(!b)return;
+  sel=b.dataset.d==='r'?'r':+b.dataset.d;
+  drawHome();
+};
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a}
+function makeQs(){
+  const pool=[];
+  (sel==='r'?[1,2,3,4,5,6,7,8,9]:[sel]).forEach(a=>{for(let b=1;b<=9;b++)pool.push([a,b])});
+  shuffle(pool);
+  const out=[];
+  while(out.length<10){out.push(...shuffle(pool.slice()))}
+  return out.slice(0,10);
+}
+function start(){
+  qs=makeQs();idx=0;ok=0;combo=0;results=[];
+  show('game');next();
+}
+function next(){
+  locked=false;retry=false;
+  const [a,b]=qs[idx];
+  $('q').innerHTML=`${a}<em>×</em>${b}`;
+  $('combo').textContent=combo>=2?`🔥 ${combo}れんぞく！`:'';
+  $('msg').textContent='';
+  $('dots').hidden=true;$('hintBtn').hidden=false;
+  $('score').textContent=`${idx+1} / 10`;
+  $('bar').innerHTML=qs.map((_,i)=>`<i class="${i<idx?results[i]:i===idx?'now':''}"></i>`).join('');
+  const right=a*b,c=new Set([right]);
+  [a*(b+1),a*(b-1),(a+1)*b,(a-1)*b,right+1,right-1,right+10,right-10].forEach(x=>{if(x>0&&x!==right&&c.size<12)c.add(x)});
+  const wrong=shuffle([...c].filter(x=>x!==right)).slice(0,3);
+  $('ans').innerHTML=shuffle([right,...wrong]).map(v=>`<button class="a" data-v="${v}">${v}</button>`).join('');
+}
+function showDots(a,b){
+  const d=$('dots');
+  d.innerHTML=Array.from({length:a},(_,i)=>`<div>${'<b></b>'.repeat(b)}<span>${(i+1)*b}</span></div>`).join('');
+  d.hidden=false;$('hintBtn').hidden=true;
+}
+$('hintBtn').onclick=()=>{const[a,b]=qs[idx];showDots(a,b)};
+$('ans').onclick=e=>{
+  const btn=e.target.closest('.a');if(!btn||locked)return;
+  const[a,b]=qs[idx];const v=+btn.dataset.v;
+  if(v===a*b){
+    locked=true;
+    btn.classList.add('good');
+    if(!retry){ok++;combo++;results[idx]='ok'}else{results[idx]='ng'}
+    $('msg').textContent=['せいかい！🎉','すごい！⭐','やったね！🌈','そのとおり！👏'][Math.random()*4|0];
+    setTimeout(()=>{idx++;idx>=10?finish():next()},retry?1600:850);
+  }else{
+    btn.classList.add('bad');btn.disabled=true;
+    combo=0;retry=true;results[idx]='ng';
+    $('combo').textContent='';
+    $('msg').textContent='おしい！ もういちど えらんでね';
+    showDots(a,b);
+  }
+};
+function finish(){
+  show('result');
+  const stars=ok>=10?3:ok>=9?2:ok>=5?1:0;
+  $('rstars').textContent='⭐'.repeat(stars)+'☆'.repeat(3-stars);
+  let face='💪',txt=`${ok}もん せいかい！ 9もん せいかいで クリアだよ。もういちど ちょうせん！`;
+  if(ok>=9){
+    face=ok===10?'🏆':'🎉';txt=`${ok}もん せいかい！ クリア！`;
+    {
+      const n=cl(sel);
+      if(n<5){
+        got[sel]=n+1;save();
+        if(n+1>=5){face=sel==='r'?RARE:ANIMALS[sel-1];txt=sel==='r'?`ランダムを 5かいクリア！ レアな どうぶつが なかまに なったよ！`:`5かいクリア！ ${sel}のだんの どうぶつが なかまに なったよ！`}
+        else txt=`${ok}もん せいかい！ クリア！ どうぶつまで あと${4-n}かい`;
+      }
+    }
+  }
+  $('rface').textContent=face;$('rtext').textContent=txt;
+}
+$('start').onclick=start;
+$('again').onclick=start;
+$('home2').onclick=()=>{drawHome();show('home')};
+$('quit').onclick=()=>{drawHome();show('home')};
+drawHome();
+</script>
+</body>
+</html>
